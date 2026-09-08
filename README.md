@@ -1,6 +1,6 @@
-# 🗺️ EasyPlanning - Módulo de Planejamento Hidrográfico
+﻿# 🗺️ DELTA - Dimensionador de Espaçamento de Linhas e Trajetórias Automatizadas
 
-O **EasyPlanning** é uma aplicação desktop desenvolvida em Python para automatizar, otimizar e padronizar o planejamento pré-campo de levantamentos batimétricos e hidrográficos. Criado no âmbito do **GPHIDRO** (Grupo de Pesquisas em Hidrografia) da **Universidade Federal de Viçosa (UFV)** como projeto de Iniciação Científica (IC), o software integra normas técnicas nacionais e internacionais (ANA, NORMAM/DHN, IHO S-44) com algoritmos de geoprocessamento para traçado automatizado de linhas de sondagem (LS) e verificação (LV), cálculo de esforço operacional e geração de relatórios técnicos completos em PDF.
+O **DELTA** é uma aplicação desktop desenvolvida em Python para automatizar, otimizar e padronizar o planejamento pré-campo de levantamentos batimétricos e hidrográficos. Criado no âmbito do **GPHIDRO** (Grupo de Pesquisas em Hidrografia) da **Universidade Federal de Viçosa (UFV)** como projeto de Iniciação Científica (IC), o software integra normas técnicas nacionais e internacionais (ANA, NORMAM/DHN, IHO S-44) com algoritmos de geoprocessamento para traçado automatizado de linhas de sondagem (LS) e verificação (LV), cálculo de esforço operacional e geração de relatórios técnicos completos em PDF.
 
 ---
 
@@ -22,7 +22,7 @@ O **EasyPlanning** é uma aplicação desktop desenvolvida em Python para automa
 
 O planejamento prévio de uma campanha hidrográfica é uma das etapas mais críticas para assegurar a qualidade dos dados, a segurança da navegação da embarcação e a viabilidade econômica do levantamento. 
 
-O **EasyPlanning** resolve as principais dores do planejamento manual:
+O **DELTA** resolve as principais dores do planejamento manual:
 1. **Eliminação de cálculos manuais repetitivos** para dimensionamento do espaçamento de linhas.
 2. **Geração geométrica precisa** de linhas de sondagem transversais ortogonais ao talvegue/eixo e linhas de verificação longitudinais paralelas.
 3. **Estimativa realista do tempo de levantamento**, considerando a velocidade da embarcação e o tempo despendido em manobras de giro entre linhas.
@@ -47,7 +47,7 @@ O **EasyPlanning** resolve as principais dores do planejamento manual:
 - 📊 **Interface Gráfica e Dashboard Integrado**:
   - Construída com Tkinter, interface responsiva e formulário inteligente (habilita/desabilita parâmetros de acordo com o método escolhido).
   - Visualização cartográfica em tempo real via Matplotlib com proporção correta (`aspect='equal'`), cores temáticas e legenda.
-  - Cartões de resumo com métricas imediatas ($\Delta LS$, $\Delta LV$, quantidade de segmentos e tempo total).
+  - Cartões de resumo com métricas imediatas ($\DELTA LS$, $\DELTA LV$, quantidade de segmentos e tempo total).
 - 📄 **Exportação de Pacote Técnico**:
   - **Relatório PDF**: Documento profissional com cabeçalho institucional, tabela de parâmetros espaciais, dados operacionais e mapa vetorial em alta resolução.
   - **GeoJSON**: Camadas vetoriais `Linhas_Sondagem.geojson` e `Linhas_Verificacao.geojson`.
@@ -56,39 +56,39 @@ O **EasyPlanning** resolve as principais dores do planejamento manual:
 
 ## 📐 Métodos de Cálculo e Critérios Normativos
 
-O EasyPlanning contempla os principais critérios regulatórios e empíricos aplicados na engenharia hidrográfica:
+O DELTA contempla os principais critérios regulatórios e empíricos aplicados na engenharia hidrográfica:
 
 ### 1. Diretrizes da ANA (Agência Nacional de Águas e Saneamento Básico)
 * **ANA UHE (Usinas Hidrelétricas):**
-  $$\Delta LS = \left( \frac{0{,}35 \cdot A_{ha}^{0{,}35}}{L_{km}} \right) \times 1000$$
+  $$\DELTA LS = \left( \frac{0{,}35 \cdot A_{ha}^{0{,}35}}{L_{km}} \right) \times 1000$$
 * **ANA PCH (Pequenas Centrais Hidrelétricas):**
-  $$\Delta LS = \left( \frac{0{,}10 \cdot A_{ha}^{0{,}25}}{L_{km}} \right) \times 1000$$
+  $$\DELTA LS = \left( \frac{0{,}10 \cdot A_{ha}^{0{,}25}}{L_{km}} \right) \times 1000$$
   *Onde $A_{ha}$ é a área do reservatório em hectares e $L_{km}$ é o comprimento do eixo em quilômetros.*
 
 ### 2. Normas da Autoridade Marítima (NORMAM - DHN / Marinha do Brasil)
 * **NORMAM Monofeixe (Single-Beam Echo Sounder - SBES):**
   Espaçamento em função da profundidade média local ($h$):
-  $$\Delta LS = \max(3 \cdot h, 25{,}0 \text{ m})$$
+  $$\DELTA LS = \max(3 \cdot h, 25{,}0 \text{ m})$$
 * **NORMAM Multifeixe (Multibeam Echo Sounder - MBES):**
   Calcula a largura da faixa acústica (*swath*) $W$ para abertura angular $\theta$ e aplica a porcentagem de sobreposição requerida ($C_{MB}$):
   $$W = 2 \cdot h \cdot \tan\left(\frac{\theta}{2}\right)$$
-  $$\Delta LS = \left\lceil 1{,}5 \cdot W - W \cdot \left(\frac{C_{MB}}{200}\right) \right\rceil$$
+  $$\DELTA LS = \left\lceil 1{,}5 \cdot W - W \cdot \left(\frac{C_{MB}}{200}\right) \right\rceil$$
 
 ### 3. Escala Cartográfica (Critério Gráfico / IHO)
 Baseado no erro gráfico admissível no papel (5 mm na escala da carta):
-$$\Delta LS = 0{,}005 \cdot E = \frac{E}{200}$$
-*Exemplo: Para escala $1:2.000$, $\Delta LS = 10\text{ m}$.*
+$$\DELTA LS = 0{,}005 \cdot E = \frac{E}{200}$$
+*Exemplo: Para escala $1:2.000$, $\DELTA LS = 10\text{ m}$.*
 
 ### 4. Sonar de Varredura Lateral (Side Scan Sonar - SSS)
 Dimensionado a partir do alcance lateral do sonar ($R_{sss}$) e da taxa de cobertura:
-* **Cobertura 100%:** $\Delta LS = 2 \cdot R_{sss}$
-* **Cobertura 200%:** $\Delta LS = R_{sss}$
+* **Cobertura 100%:** $\DELTA LS = 2 \cdot R_{sss}$
+* **Cobertura 200%:** $\DELTA LS = R_{sss}$
 * **Cobertura > 200% (Varredura com compensação de nadir $\alpha$):**
-  $$\Delta LS = R_{sss} \cdot \left(1 - \frac{\alpha}{100}\right)$$
+  $$\DELTA LS = R_{sss} \cdot \left(1 - \frac{\alpha}{100}\right)$$
 
 ### 5. Linhas de Verificação (LV)
 As linhas de controle/verificação cruzam as linhas de sondagem para garantir a consistência vertical do levantamento:
-$$\Delta LV = m_{LV} \cdot \Delta LS$$
+$$\DELTA LV = m_{LV} \cdot \DELTA LS$$
 *(O multiplicador $m_{LV}$ padrão recomendado por normas costuma ser 10).*
 
 ### 6. Estimativa de Tempo de Operação
@@ -121,12 +121,12 @@ O Conda facilita a instalação de pacotes geoespaciais e dependências C (GDAL,
 
 ```bash
 # Clone ou baixe o repositório
-git clone https://github.com/lucas-h-costa/EasyPlanning.git
-cd EasyPlanning
+git clone https://github.com/lucas-h-costa/DELTA.git
+cd DELTA
 
 # Crie e ative um ambiente
-conda create -n easyplanning python=3.11 -y
-conda activate easyplanning
+conda create -n DELTA python=3.11 -y
+conda activate DELTA
 
 # Instale as dependências
 conda install -c conda-forge geopandas pyogrio shapely pyproj matplotlib reportlab pillow
@@ -136,7 +136,7 @@ conda install -c conda-forge geopandas pyogrio shapely pyproj matplotlib reportl
 
 ```bash
 # Clone ou baixe o repositório
-cd EasyPlanning
+cd DELTA
 
 # Crie e ative um ambiente virtual
 python -m venv venv
@@ -196,8 +196,8 @@ python app_tk.py
 ## 🗂️ Estrutura do Repositório
 
 ```text
-EasyPlanning/
-├── app_tk.py           # Aplicação principal com interface gráfica Tkinter e orquestração
+DELTA/
+├── app_tk.py           # Aplicação principal com interface gráfica CustomTkinter e orquestração
 ├── functions_tk.py     # Módulo de cálculos matemáticos, geoprocessamento e geração de PDF
 ├── KML_coord.py        # Utilitário para extração de coordenadas e vértices de arquivos KML
 ├── requirements.txt    # Relação de dependências do Python
@@ -210,7 +210,7 @@ EasyPlanning/
 
 ## 👥 Créditos
 
-- **Desenvolvedor:** Lucas Costa
+- **Desenvolvedor:** Lucas Costa, Prof. Ítalo Ferreira, Prof. Júlio Oliveira
 - **Orientação e Pesquisa:** Prof. Ítalo Ferreira, Grupo de Pesquisas em Hidrografia (**GPHIDRO**)
 - **Instituição:** Universidade Federal de Viçosa (**UFV**) - Departamento de Engenharia Civil / Agrimensura e Cartografia
 - **Contexto:** Projeto de Iniciação Científica (IC)

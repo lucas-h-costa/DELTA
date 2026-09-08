@@ -1,4 +1,4 @@
-
+﻿
 import customtkinter as ctk
 from tkinter import filedialog, messagebox, Text, Scrollbar
 from tkinter.font import Font
@@ -14,11 +14,11 @@ from shapely.geometry import Polygon, LineString
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
-class EasyPlanningApp:
+class DELTAApp:
     def __init__(self, root):
         """Inicializa o estado da aplicação e monta a interface principal."""
         self.root = root
-        self.root.title("EasyPlanning ")
+        self.root.title("DELTA - Planejamento Hidrográfico")
         self.root.geometry("1300x850")
         
         try:
@@ -61,7 +61,7 @@ class EasyPlanningApp:
         barra_superior = ctk.CTkFrame(self.root, height=60, corner_radius=0, fg_color="#1f538d")
         barra_superior.pack(side='top', fill='x')
         
-        ctk.CTkLabel(barra_superior, text="EasyPlanning GPHidro", font=ctk.CTkFont(size=20, weight="bold"), text_color="white").pack(side='left', padx=20, pady=10)
+        ctk.CTkLabel(barra_superior, text="DELTA GPHidro", font=ctk.CTkFont(size=20, weight="bold"), text_color="white").pack(side='left', padx=20, pady=10)
         
         ctk.CTkButton(barra_superior, text="Sobre", command=self.exibir_sobre, width=80, fg_color="#14375e", corner_radius=0).pack(side='right', padx=10, pady=10)
         ctk.CTkButton(barra_superior, text="Ajuda", command=self.exibir_ajuda, width=80, fg_color="#14375e", corner_radius=0).pack(side='right', padx=5, pady=10)
@@ -97,7 +97,7 @@ class EasyPlanningApp:
             'theta': ctk.DoubleVar(value=120.0),
             'c_mb': ctk.DoubleVar(value=100.0),
             'escala': ctk.DoubleVar(value=1000.0),
-            'delta_manual': ctk.DoubleVar(value=20.0),
+            'DELTA_manual': ctk.DoubleVar(value=20.0),
             'r_sss': ctk.DoubleVar(value=50.0),
             'alpha_sss': ctk.DoubleVar(value=10.0),
             'm_lv': ctk.DoubleVar(value=10.0),
@@ -125,7 +125,7 @@ class EasyPlanningApp:
         self.adicionar_campo(coluna_central, "Abertura angular theta (°):", self.variaveis['theta'], 'theta')
         self.adicionar_campo(coluna_central, "Cobertura MBES C_MB (%):", self.variaveis['c_mb'], 'c_mb')
         self.adicionar_campo(coluna_central, "Denominador da Escala (E):", self.variaveis['escala'], 'escala')
-        self.adicionar_campo(coluna_central, "Espaçamento Manual LS (m):", self.variaveis['delta_manual'], 'delta_manual')
+        self.adicionar_campo(coluna_central, "Espaçamento Manual LS (m):", self.variaveis['DELTA_manual'], 'DELTA_manual')
         self.adicionar_campo(coluna_central, "Range SSS R (m):", self.variaveis['r_sss'], 'r_sss')
         self.adicionar_campo(coluna_central, "Altitude relativa SSS alpha (%):", self.variaveis['alpha_sss'], 'alpha_sss')
         self.adicionar_campo(coluna_central, "Multiplicador de Verificação (m LV):", self.variaveis['m_lv'], 'm_lv')
@@ -265,7 +265,7 @@ class EasyPlanningApp:
         """Habilita os parâmetros exigidos pelo método de cálculo selecionado."""
         metodo = self.variaveis['metodo'].get()
         
-        campos_especificos = ['h_media', 'theta', 'c_mb', 'escala', 'delta_manual', 'r_sss', 'alpha_sss']
+        campos_especificos = ['h_media', 'theta', 'c_mb', 'escala', 'DELTA_manual', 'r_sss', 'alpha_sss']
         for campo in campos_especificos:
             self.entradas[campo].configure(state='disabled')
             
@@ -278,7 +278,7 @@ class EasyPlanningApp:
         elif metodo == 'Escala':
             self.entradas['escala'].configure(state='normal')
         elif metodo == 'Manual':
-            self.entradas['delta_manual'].configure(state='normal')
+            self.entradas['DELTA_manual'].configure(state='normal')
         elif metodo in ['Side Scan (Cobertura 100%)', 'Side Scan (Cobertura 200%)']:
             self.entradas['r_sss'].configure(state='normal')
         elif metodo == 'Side Scan (Cobertura > 200%)':
@@ -338,7 +338,7 @@ class EasyPlanningApp:
                 return
 
             metodo_selecionado = self.variaveis['metodo'].get()
-            delta_ls, delta_lv = f.calcular_espacamentos(
+            DELTA_ls, DELTA_lv = f.calcular_espacamentos(
                 area_m2=self.variaveis['area_m2'].get(),
                 comp_eixo_m=self.variaveis['comp_eixo_m'].get(),
                 metodo=metodo_selecionado,
@@ -346,7 +346,7 @@ class EasyPlanningApp:
                 theta=self.variaveis['theta'].get(),
                 c_mb=self.variaveis['c_mb'].get(),
                 escala=self.variaveis['escala'].get(),
-                delta_manual=self.variaveis['delta_manual'].get(),
+                DELTA_manual=self.variaveis['DELTA_manual'].get(),
                 r_sss=self.variaveis['r_sss'].get(),
                 alpha=self.variaveis['alpha_sss'].get(),
                 m_lv=self.variaveis['m_lv'].get()
@@ -356,7 +356,7 @@ class EasyPlanningApp:
             val_buf = self.variaveis['buffer_m'].get()
 
             self.gdf_ls, self.gdf_lv = f.gerar_linhas(
-                self.gdf_area, self.gdf_eixo, delta_ls, delta_lv, aplicar_buf, val_buf
+                self.gdf_area, self.gdf_eixo, DELTA_ls, DELTA_lv, aplicar_buf, val_buf
             )
             
             fig = f.gerar_grafico(
@@ -404,8 +404,8 @@ class EasyPlanningApp:
             )
 
             self.variaveis_dash['metodo'].set(metodo_selecionado.replace("_", " "))
-            self.variaveis_dash['ls'].set(f"{delta_ls:.2f}")
-            self.variaveis_dash['lv'].set(f"{delta_lv:.2f}")
+            self.variaveis_dash['ls'].set(f"{DELTA_ls:.2f}")
+            self.variaveis_dash['lv'].set(f"{DELTA_lv:.2f}")
             self.variaveis_dash['seg'].set(str(self.variaveis['n_s'].get()))
             self.variaveis_dash['tempo'].set(f"{tempo_horas:.2f}")
 
@@ -426,7 +426,7 @@ class EasyPlanningApp:
             if metodo_selecionado == 'Escala':
                 dicionario_resultados["Escala do Levantamento (E)"] = f"1:{self.variaveis['escala'].get():.0f}"
             if metodo_selecionado == 'Manual':
-                dicionario_resultados["Espaçamento LS Manual (Δ_LS)"] = f"{self.variaveis['delta_manual'].get():.2f} m"
+                dicionario_resultados["Espaçamento LS Manual (Δ_LS)"] = f"{self.variaveis['DELTA_manual'].get():.2f} m"
             if 'Side Scan' in metodo_selecionado:
                 dicionario_resultados["Alcance SSS (Range)"] = f"{self.variaveis['r_sss'].get():.2f} m"
             if metodo_selecionado == 'Side Scan (Cobertura > 200%)':
@@ -434,8 +434,8 @@ class EasyPlanningApp:
 
             dicionario_resultados.update({
                 "Multiplicador de Verificação": f"{self.variaveis['m_lv'].get():.1f}",
-                "Espaçamento LS Geométrico (Δ_LS)": f"{delta_ls:.2f} m",
-                "Espaçamento LV Geométrico (Δ_LV)": f"{delta_lv:.2f} m",
+                "Espaçamento LS Geométrico (Δ_LS)": f"{DELTA_ls:.2f} m",
+                "Espaçamento LV Geométrico (Δ_LV)": f"{DELTA_lv:.2f} m",
                 "Quantidade de Segmentos Projetados": f"{self.variaveis['n_s'].get()} linhas",
                 "Tempo Operacional Estimado": f"{tempo_horas:.2f} horas"
             })
@@ -587,9 +587,9 @@ class EasyPlanningApp:
 
     def exibir_sobre(self):
         """Exibe as informações básicas da aplicação e sua versão."""
-        messagebox.showinfo("Sobre o Sistema", "EasyPlanning - Módulo de Planejamento Hidrográfico\nVersão 1.0\nDesenvolvido por Lucas H. Costa\n GPHIDRO \n2026")
+        messagebox.showinfo("Sobre o Sistema", "DELTA - Dimensionador de Espaçamento de Linhas e Trajetórias Automatizadas\nVersão 1.0\nDesenvolvido por Lucas H. Costa\nGPHIDRO\n2026")
 
 if __name__ == "__main__":
     raiz = ctk.CTk()
-    aplicacao = EasyPlanningApp(raiz)
+    aplicacao = DELTAApp(raiz)
     raiz.mainloop()

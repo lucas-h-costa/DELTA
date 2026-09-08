@@ -1,8 +1,9 @@
-# Manual técnico do EasyPlanning
+﻿
+# Manual técnico do DELTA
 
 ## 1. Finalidade e escopo
 
-O EasyPlanning é um protótipo desenvolvido por Lucas H. Costa, sob orientação do Prof. Ítalo Ferreira (GPHIDRO/UFV). Sua finalidade é apoiar o planejamento preliminar de levantamentos hidrográficos por meio de:
+O DELTA é um protótipo desenvolvido pelo GPHIDRO/UFV. Sua finalidade é apoiar o planejamento preliminar de levantamentos hidrográficos por meio de:
 
 - leitura de geometrias de área e eixo em formatos vetoriais;
 - conversão para um sistema de coordenadas adequado a cálculos métricos;
@@ -85,7 +86,7 @@ Ao selecionar um método, a interface habilita somente os campos específicos ne
 
 O programa calcula primeiro `ΔLS` e, em seguida, calcula `ΔLV` por meio de:
 
-$$\Delta LV = m_{LV} \cdot \Delta LS$$
+$$\DELTA LV = m_{LV} \cdot \DELTA LS$$
 
 ### 5.1 ANA UHE e ANA PCH
 
@@ -93,11 +94,11 @@ A área é convertida de metros quadrados para hectares e o comprimento do eixo 
 
 Para UHE:
 
-$$\Delta LS = \left(\frac{0{,}35 \cdot A_{ha}^{0{,}35}}{L_{km}}\right) \cdot 1000$$
+$$\DELTA LS = \left(\frac{0{,}35 \cdot A_{ha}^{0{,}35}}{L_{km}}\right) \cdot 1000$$
 
 Para PCH:
 
-$$\Delta LS = \left(\frac{0{,}10 \cdot A_{ha}^{0{,}25}}{L_{km}}\right) \cdot 1000$$
+$$\DELTA LS = \left(\frac{0{,}10 \cdot A_{ha}^{0{,}25}}{L_{km}}\right) \cdot 1000$$
 
 Se o comprimento do eixo for zero, o programa retorna `ΔLS = 0` e `ΔLV = 0`.
 
@@ -105,7 +106,7 @@ Se o comprimento do eixo for zero, o programa retorna `ΔLS = 0` e `ΔLV = 0`.
 
 O espaçamento é obtido pela profundidade média:
 
-$$\Delta LS = \lceil\max(3h, 25)\rceil$$
+$$\DELTA LS = \lceil\max(3h, 25)\rceil$$
 
 ### 5.3 NORMAM multifeixe
 
@@ -115,13 +116,13 @@ $$W = 2h\tan\left(\frac{\theta}{2}\right)$$
 
 Depois:
 
-$$\Delta LS = \left\lceil1{,}5W - W\left(\frac{C_{MB}}{200}\right)\right\rceil$$
+$$\DELTA LS = \left\lceil1{,}5W - W\left(\frac{C_{MB}}{200}\right)\right\rceil$$
 
 ### 5.4 Escala e método manual
 
 No método de escala, o espaçamento é:
 
-$$\Delta LS = 0{,}005E$$
+$$\DELTA LS = 0{,}005E$$
 
 No método manual, o valor informado pelo usuário é utilizado diretamente.
 

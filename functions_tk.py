@@ -1,4 +1,4 @@
-import numpy as np
+﻿import numpy as np
 import matplotlib.pyplot as plt
 import geopandas as gpd
 import os
@@ -53,7 +53,7 @@ def calcular_largura_perpendicular(gdf_area, gdf_eixo):
         print(f"Falha no cálculo geométrico transversal: {e}")
         return 0.0
 
-def calcular_espacamentos(area_m2, comp_eixo_m, metodo, h, theta, c_mb, escala, delta_manual, r_sss, alpha, m_lv):
+def calcular_espacamentos(area_m2, comp_eixo_m, metodo, h, theta, c_mb, escala, DELTA_manual, r_sss, alpha, m_lv):
     """Calcula os espaçamentos das linhas de sondagem e verificação."""
     a_ha = area_m2 / 10000.0
     l_km = comp_eixo_m / 1000.0
@@ -61,30 +61,30 @@ def calcular_espacamentos(area_m2, comp_eixo_m, metodo, h, theta, c_mb, escala, 
         return 0.0, 0.0
 
     if metodo == 'ANA_UHE':
-        delta_ls = (0.35 * (a_ha ** 0.35) / l_km) * 1000.0
+        DELTA_ls = (0.35 * (a_ha ** 0.35) / l_km) * 1000.0
     elif metodo == 'ANA_PCH':
-        delta_ls = (0.1 * (a_ha ** 0.25) / l_km) * 1000.0
+        DELTA_ls = (0.1 * (a_ha ** 0.25) / l_km) * 1000.0
     elif metodo == 'NORMAM_Monofeixe':
-        delta_ls = np.ceil(max(3.0 * h, 25.0))
+        DELTA_ls = np.ceil(max(3.0 * h, 25.0))
     elif metodo == 'NORMAM_Multifeixe':
         theta_rad = np.radians(theta)
         w = 2.0 * h * np.tan(theta_rad / 2.0)
-        delta_ls = np.ceil(1.5 * w - w * (c_mb / 200.0))
+        DELTA_ls = np.ceil(1.5 * w - w * (c_mb / 200.0))
     elif metodo == 'Escala':
-        delta_ls = 0.005 * escala
+        DELTA_ls = 0.005 * escala
     elif metodo == 'Manual':
-        delta_ls = delta_manual
+        DELTA_ls = DELTA_manual
     elif metodo == 'Side Scan (Cobertura 100%)':
-        delta_ls = 2.0 * r_sss
+        DELTA_ls = 2.0 * r_sss
     elif metodo == 'Side Scan (Cobertura 200%)':
-        delta_ls = r_sss
+        DELTA_ls = r_sss
     elif metodo == 'Side Scan (Cobertura > 200%)':
-        delta_ls = r_sss * (1.0 - (alpha / 100.0))
+        DELTA_ls = r_sss * (1.0 - (alpha / 100.0))
     else:
-        delta_ls = 0.0
+        DELTA_ls = 0.0
 
-    delta_lv = m_lv * delta_ls
-    return delta_ls, delta_lv
+    DELTA_lv = m_lv * DELTA_ls
+    return DELTA_ls, DELTA_lv
 
 def calcular_estimativa_tempo(l_tot_m, v_nos, t_g_min, n_s):
     """Estima o tempo de levantamento em horas, incluindo as manobras."""
@@ -93,7 +93,7 @@ def calcular_estimativa_tempo(l_tot_m, v_nos, t_g_min, n_s):
     horas = (l_tot_m / (v_nos * 1852.0)) + ((t_g_min / 60.0) * max(0, n_s - 1))
     return horas
 
-def gerar_linhas(gdf_area, gdf_eixo, delta_ls, delta_lv, aplicar_buffer=False, valor_buffer=0.0):
+def gerar_linhas(gdf_area, gdf_eixo, DELTA_ls, DELTA_lv, aplicar_buffer=False, valor_buffer=0.0):
     """Gera linhas de sondagem perpendiculares e linhas de verificação paralelas."""
     area_geom = gdf_area.geometry.unary_union
     
@@ -110,8 +110,8 @@ def gerar_linhas(gdf_area, gdf_eixo, delta_ls, delta_lv, aplicar_buffer=False, v
     linhas_lv = []
     
     # Cada linha de sondagem é obtida pela interseção de uma perpendicular com a área.
-    if delta_ls > 0:
-        distancias = np.arange(0, eixo.length, delta_ls)
+    if DELTA_ls > 0:
+        distancias = np.arange(0, eixo.length, DELTA_ls)
         for d in distancias:
             p_atual = eixo.interpolate(d)
             p_ant = eixo.interpolate(max(0, d - 0.1))
@@ -133,18 +133,18 @@ def gerar_linhas(gdf_area, gdf_eixo, delta_ls, delta_lv, aplicar_buffer=False, v
                 linhas_ls.append(intersecao)
                 
     # As linhas de verificação são deslocadas simetricamente a partir do eixo.
-    if delta_lv > 0:
+    if DELTA_lv > 0:
         intersecao_central = eixo.intersection(area_recorte)
         if not intersecao_central.is_empty:
             linhas_lv.append(intersecao_central)
         multiplicador = 1
         while True:
             try:
-                offset_esq = eixo.offset_curve(multiplicador * delta_lv)
-                offset_dir = eixo.offset_curve(-multiplicador * delta_lv)
+                offset_esq = eixo.offset_curve(multiplicador * DELTA_lv)
+                offset_dir = eixo.offset_curve(-multiplicador * DELTA_lv)
             except AttributeError:
-                offset_esq = eixo.parallel_offset(multiplicador * delta_lv, 'left')
-                offset_dir = eixo.parallel_offset(multiplicador * delta_lv, 'right')
+                offset_esq = eixo.parallel_offset(multiplicador * DELTA_lv, 'left')
+                offset_dir = eixo.parallel_offset(multiplicador * DELTA_lv, 'right')
             
             inter_esq = offset_esq.intersection(area_recorte) if not offset_esq.is_empty else None
             inter_dir = offset_dir.intersection(area_recorte) if not offset_dir.is_empty else None
@@ -252,7 +252,8 @@ def gerar_relatorio_pdf(resultados, fig, titulo="Relatório Técnico de Planejam
         fontSize=11, textColor=colors.HexColor("#0b5aa2"), spaceBefore=14, spaceAfter=6
     )
 
-    texto_cabecalho = "Relatório Técnico de Planejamento Hidrográfico<br/><font size=10>EasyPlanning, GPHIDRO, UFV</font><br/><br/><font size=9.5>Gerado automaticamente em: {}</font>".format(datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+    texto_cabecalho = "Relatório Técnico de Planejamento Hidrográfico<br/><font size=10>DELTA, GPHIDRO, UFV</font><br/><br/><font size=9.5>Gerado automaticamente em: {}</font>".format(datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+    texto_cabecalho = "Relatório Técnico de Planejamento Hidrográfico<br/><font size=10>DELTA, GPHIDRO, UFV</font><br/><br/><font size=9.5>Gerado automaticamente em: {}</font>".format(datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
     tabela_cabecalho = Table([[Paragraph(texto_cabecalho, estilo_titulo_cabecalho)]], colWidths=[7.5*inch])
     tabela_cabecalho.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#0b5aa2")),
