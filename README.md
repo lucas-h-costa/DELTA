@@ -1,4 +1,4 @@
-# 🗺️ EasyPlanning - Módulo de Planejamento Hidrográfico
+# 🗺️ EasyPlanning -  Planejamento Hidrográfico
 
 O **EasyPlanning** é uma aplicação desktop desenvolvida em Python para automatizar, otimizar e padronizar o planejamento pré-campo de levantamentos batimétricos e hidrográficos. Criado no âmbito do **GPHIDRO** (Grupo de Pesquisas em Hidrografia) da **Universidade Federal de Viçosa (UFV)** como projeto de Iniciação Científica (IC), o software integra normas técnicas nacionais e internacionais (ANA, NORMAM/DHN, IHO S-44) com algoritmos de geoprocessamento para traçado automatizado de linhas de sondagem (LS) e verificação (LV), cálculo de esforço operacional e geração de relatórios técnicos completos em PDF.
 
