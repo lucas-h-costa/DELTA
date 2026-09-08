@@ -369,16 +369,38 @@ class EasyPlanningApp:
             canvas.draw()
             canvas.get_tk_widget().pack(fill='both', expand=True)
             
-            if delta_ls > 0:
-                qnt_linhas = max(1, int(self.variaveis['comp_eixo_m'].get() / delta_ls))
-                self.variaveis['n_s'].set(qnt_linhas)
+            # Extrai os comprimentos reais calculados pelo GeoPandas
+            comp_ls = self.gdf_ls.geometry.length.sum() if not self.gdf_ls.empty else 0
+            comp_lv = self.gdf_lv.geometry.length.sum() if not self.gdf_lv.empty else 0
+            l_tot_real = comp_ls + comp_lv
+
+            ## Extrai os comprimentos reais calculados pelo GeoPandas
+            comp_ls = self.gdf_ls.geometry.length.sum() if not self.gdf_ls.empty else 0
+            comp_lv = self.gdf_lv.geometry.length.sum() if not self.gdf_lv.empty else 0
+            l_tot_real = comp_ls + comp_lv
+
+            # Explode os MultiLineStrings em LineStrings individuais para contar os segmentos reais
+            if not self.gdf_ls.empty:
+                gdf_ls_explodido = self.gdf_ls.explode(index_parts=False)
+                n_s_ls = len(gdf_ls_explodido)
+            else:
+                n_s_ls = 0
+                
+            if not self.gdf_lv.empty:
+                gdf_lv_explodido = self.gdf_lv.explode(index_parts=False)
+                n_s_lv = len(gdf_lv_explodido)
+            else:
+                n_s_lv = 0
+
+            n_s_real = n_s_ls + n_s_lv
+
+            self.variaveis['n_s'].set(n_s_real)
             
-            l_tot_estimado = self.variaveis['comp_eixo_m'].get()
             tempo_horas = f.calcular_estimativa_tempo(
-                l_tot_m=l_tot_estimado * (self.variaveis['n_s'].get() if delta_ls > 0 else 1),
+                l_tot_m=l_tot_real,
                 v_nos=self.variaveis['v_nos'].get(),
                 t_g_min=self.variaveis['t_g_min'].get(),
-                n_s=self.variaveis['n_s'].get()
+                n_s=n_s_real
             )
 
             self.variaveis_dash['metodo'].set(metodo_selecionado.replace("_", " "))
