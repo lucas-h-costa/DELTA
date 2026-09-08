@@ -25,13 +25,13 @@ class DELTAApp:
             import os
             import tempfile
             diretorio_atual = os.path.dirname(os.path.abspath(__file__))
-            caminho_icone = os.path.join(diretorio_atual, "pageIcon.jpg")
+            caminho_icone = os.path.join(diretorio_atual, "pageIcon.png")
             
             # Abre a imagem JPG
             icone_img = Image.open(caminho_icone)
             
             # Salva temporariamente como .ico para forçar a substituição do ícone do CustomTkinter
-            caminho_ico = os.path.join(tempfile.gettempdir(), "pageIcon_temp.ico")
+            caminho_ico = os.path.join(tempfile.gettempdir(), "Icon_temp.ico")
             icone_img.save(caminho_ico, format="ICO", sizes=[(64, 64)])
             
             # Aplica o ícone nativo na barra de título
